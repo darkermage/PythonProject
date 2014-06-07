@@ -15,12 +15,12 @@ class book:
 		self.languageCode = None
 		self.isEbook = None
 		self.description = None
-		self.originalPanguageId = None
-		self.originalPublicationDay = None
-		self.originalPublicationMonth = None
-		self.originalPublicationYear = None
-		self.originalTitle = None
-		self.amazonUrl = None
+		self.originalPanguageId = None #delete
+		self.originalPublicationDay = None #delete
+		self.originalPublicationMonth = None #delete
+		self.originalPublicationYear = None #delete
+		self.originalTitle = None #delete
+		self.amazonUrl = None #TODO add more stores
 		
 	def setGoodreadsID(self,tmp):
 		self.goodreadsID = tmp
