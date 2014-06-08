@@ -15,12 +15,7 @@ class book:
 		self.languageCode = None
 		self.isEbook = None
 		self.description = None
-		self.originalPanguageId = None #delete
-		self.originalPublicationDay = None #delete
-		self.originalPublicationMonth = None #delete
-		self.originalPublicationYear = None #delete
-		self.originalTitle = None #delete
-		self.amazonUrl = None #TODO add more stores
+		self.links = {} #TODO add more stores
 		
 	def setGoodreadsID(self,tmp):
 		self.goodreadsID = tmp
@@ -87,18 +82,25 @@ class book:
 	def getDescription(self):
 		return self.description
 		
-	def setAmazonUrl(self,tmp):
-		self.amazonUrl = tmp
-	def getAmazonUrl(self):
-		return self.amazonUrl
+	def setLink(self,name,url):
+		self.links[name] = url
+	def getLinks(self):
+		return self.links
+	def clearLinks(self):
+		self.links.clear()
 	
 	def AmazonLookup(self):
 		if (self.getAmazonUrl() != None):
 			webbrowser.open(self.getAmazonUrl())
 		
 		
+	def getLinksStr(self):
+		keys = self.links.keys()
+		ret = ""
+		for i in keys:
+			ret += i+" = "+self.links[i]+"\n"
+		return ret
 	def __str__(self):
-		print self.amazonUrl
 		return ("*"*10+"BOOK"+"*"*10+"\n"+
 			"Goodreads ID = "+str(self.goodreadsID)+"\n"+
 			"Tittle = "+str(self.tittle)+"\n"+
@@ -113,7 +115,7 @@ class book:
 			"Language Code = "+str(self.languageCode)+"\n"+
 			"Is Ebook = "+str(self.isEbook)+"\n"+
 			"Description = "+str(self.description)+"\n"+
-			"Amazon URL = "+str(self.amazonUrl)+"\n"+
+			self.getLinksStr()+
 			"*"*24)
 			
 if __name__ == "__main__":

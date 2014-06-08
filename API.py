@@ -25,8 +25,7 @@ class goodReads():
 		book.setIsEbook(child[12].text)
 		book.setDescription(child[13].text)
 		for bl in child.find("book_links").findall("book_link"):
-			if bl[1].text == "Amazon":
-				book.setAmazonUrl(bl[2].text+"?book_id="+child[0].text)
+			book.setLink(bl[1].text,bl[2].text)
 		return book
 		
 	def showBookByID(self,ID):
@@ -62,11 +61,10 @@ if __name__ == "__main__":
 	g = goodReads()
 	b1 = g.showBookByID(53732)
 	b2 = g.showBookByISBN(1)
-	b3 = g.showBookByID(50)
-	b4 = g.showBookByTitle("Hatchet")
+	#b3 = g.showBookByID(50)
+	#b4 = g.showBookByTitle("Hatchet")
 	print b1
-	print b2.getAmazonUrl()
 	print b2
-	print b3
-	print b4
-	b4.AmazonLookup()
+	#print b3
+	#print b4
+	#b4.AmazonLookup()
