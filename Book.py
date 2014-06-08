@@ -17,16 +17,14 @@ class book:
 		self.languageCode = None
 		self.isEbook = None
 		self.description = None
-<<<<<<< HEAD
 		self.links = {} #TODO add more stores
-=======
+
 		self.originalPanguageId = None
 		self.originalPublicationDay = None
 		self.originalPublicationMonth = None
 		self.originalPublicationYear = None
 		self.originalTitle = None
 		self.amazonUrl = None
->>>>>>> 520c9c285cfbce1d89c92de69a95168a6e30e971
 		
 	def setGoodreadsID(self,tmp):
 		self.goodreadsID = tmp

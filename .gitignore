@@ -1,0 +1,27 @@
+*/bin
+*/obj
+*.user-settings.xml
+
+# Mac OS X
+*.DS_Store
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+*/xcuserdata
+
+*/xcshareddatas
+
+# Generated files
+*.o
+*.pyc
+
+# Backup files
+*~.nib
+/TelerikConnect - WP/packages/RadControls.for.WindowsPhone.8.2013.3.1016
+
+/TelerikConnect - WP/TelerikSocial/Bin
+/TelerikConnect - WP/TelerikSocial/obj
