@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
 import webbrowser
+
 class book:
 	def __init__(self):
 		self.goodreadsID = None
+		self.GoogleBooksId = None
 		self.tittle = None
 		self.isbn = None
 		self.isbn13 = None
@@ -11,16 +12,31 @@ class book:
 		self.publicationDay = None
 		self.publicationYear = None
 		self.publicationMonth = None
+		self.publicationDate = None
 		self.publisher = None
 		self.languageCode = None
 		self.isEbook = None
 		self.description = None
+<<<<<<< HEAD
 		self.links = {} #TODO add more stores
+=======
+		self.originalPanguageId = None
+		self.originalPublicationDay = None
+		self.originalPublicationMonth = None
+		self.originalPublicationYear = None
+		self.originalTitle = None
+		self.amazonUrl = None
+>>>>>>> 520c9c285cfbce1d89c92de69a95168a6e30e971
 		
 	def setGoodreadsID(self,tmp):
 		self.goodreadsID = tmp
 	def getGoodreadsID(self):
 		return self.goodreadsID
+		
+	def setGoogleBooksID(self,tmp):
+		self.GoogleBooksId = tmp
+	def getGoogleBooksID(self):
+		return self.GoogleBooksId
 		
 	def setTittle(self,tmp):
 		self.tittle = tmp
@@ -61,7 +77,12 @@ class book:
 		self.publicationMonth = tmp
 	def getPublicationMonth(self):
 		return self.publicationMonth
-		
+	
+	def setPublicationDate(self,tmp):
+		self.publicationDate = tmp
+	def getPublicationDate(self):
+		return self.publicationDate
+	
 	def setPublisher(self,tmp):
 		self.publisher = tmp
 	def getPublisher(self):
@@ -103,11 +124,13 @@ class book:
 	def __str__(self):
 		return ("*"*10+"BOOK"+"*"*10+"\n"+
 			"Goodreads ID = "+str(self.goodreadsID)+"\n"+
+			"Google Books ID = "+str(self.GoogleBooksId)+"\n"+
 			"Tittle = "+str(self.tittle)+"\n"+
 			"ISBN = "+str(self.isbn)+"\n"+
 			"ISBN 13 = "+str(self.isbn13)+"\n"+
 			"Image URL = "+str(self.imageURL)+"\n"+
 			"Small Image URL = "+str(self.smallImageURL)+"\n"+
+		        "Publication Date = "+str(self.publicationDate)+"\n"+
 			"Publication Day = "+str(self.publicationDay)+"\n"+
 			"Publication Month = "+str(self.publicationMonth)+"\n"+
 			"Publication Year = "+str(self.publicationYear)+"\n"+
@@ -122,5 +145,3 @@ if __name__ == "__main__":
 	b = book()
 	b.setTittle("TEST")
 	print(b)
-			
-			
