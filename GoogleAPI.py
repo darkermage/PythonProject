@@ -1,5 +1,6 @@
 ﻿import Book
 import json
+import urllib
 from urllib2 import urlopen
 
 class GoogleAPI():
@@ -78,7 +79,9 @@ class GoogleAPI():
 			return list[0]['identifier']
 		else:
 			return list[1]['identifier']
-		
+	
+	def downloadPicturebyURL(self, url):
+		urllib.urlretrieve(url, "picture.jpg")
 		
 if __name__ == "__main__":
 	obj = GoogleAPI()
@@ -90,3 +93,5 @@ if __name__ == "__main__":
 	
 	for book in books2:
 		print book
+	
+	obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2011/09/google-logo.jpg")
