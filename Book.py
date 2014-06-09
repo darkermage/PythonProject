@@ -1,10 +1,11 @@
-import webbrowser
-
+ # -*- coding: utf-8 -*-
 class book:
 	def __init__(self):
 		self.goodreadsID = None
 		self.GoogleBooksId = None
 		self.tittle = None
+		self.authors = []
+		self.nbPages = None
 		self.isbn = None
 		self.isbn13 = None
 		self.imageURL = None
@@ -33,6 +34,16 @@ class book:
 		self.tittle = tmp
 	def getTittle(self):
 		return self.tittle
+		
+	def setAuthor(self,tmp):
+		self.authors.append(tmp)
+	def getAuthors(self):
+		return self.authors
+		
+	def setNbPages(self,tmp):
+		self.nbPages = tmp
+	def getNbPages(self):
+		return self.nbPages
 		
 	def setIsbn(self,tmp):
 		self.isbn = tmp
@@ -107,16 +118,26 @@ class book:
 		for i in keys:
 			ret += i+" = "+self.links[i]+"\n"
 		return ret
+		
+	def getAuthorsStr(self):
+		ret =""
+		for i in self.authors:
+			ret += i+" ,"
+		ret+="\n"
+		return ret
+		
 	def __str__(self):
 		return ("*"*10+"BOOK"+"*"*10+"\n"+
 			"Goodreads ID = "+str(self.goodreadsID)+"\n"+
 			"Google Books ID = "+str(self.GoogleBooksId)+"\n"+
 			"Tittle = "+str(self.tittle)+"\n"+
+			"Authors = "+self.getAuthorsStr()+
+			"Pages = "+str(self.nbPages)+"\n"+
 			"ISBN = "+str(self.isbn)+"\n"+
 			"ISBN 13 = "+str(self.isbn13)+"\n"+
 			"Image URL = "+str(self.imageURL)+"\n"+
 			"Small Image URL = "+str(self.smallImageURL)+"\n"+
-		        "Publication Date = "+str(self.publicationDate)+"\n"+
+			"Publication Date = "+str(self.publicationDate)+"\n"+
 			"Publication Day = "+str(self.publicationDay)+"\n"+
 			"Publication Month = "+str(self.publicationMonth)+"\n"+
 			"Publication Year = "+str(self.publicationYear)+"\n"+

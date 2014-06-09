@@ -1,9 +1,8 @@
  # -*- coding: utf-8 -*-
-#from imp import load_source
 import Book
 import xml.etree.ElementTree as ET
 from urllib2 import urlopen
-from urllib import quote_plus as encode # za querry search string TODO
+from urllib import quote_plus as encode
 
 class goodReads():
 	def __init__(self):
@@ -13,6 +12,9 @@ class goodReads():
 		book = Book.book()
 		book.setGoodreadsID(child[0].text)
 		book.setTittle(child[1].text)
+		for author in child.find("authors").findall("author"):
+			book.setAuthor(author[1].text)
+		
 		book.setIsbn(child[2].text)
 		book.setIsbn13(child[3].text)
 		book.setImageURL(child[5].text)
@@ -24,6 +26,7 @@ class goodReads():
 		book.setLanguageCode(child[11].text)
 		book.setIsEbook(child[12].text)
 		book.setDescription(child[13].text)
+		book.setNbPages(child[16].text)
 		for bl in child.find("book_links").findall("book_link"):
 			book.setLink(bl[1].text,bl[2].text)
 		return book
@@ -50,7 +53,7 @@ class goodReads():
 		url = "https://www.goodreads.com/book/title.xml?title="+encode(str(title))+"&key="+self.key
 		responce = urlopen(url)
 		data = responce.read()
-		if ( data[:15] != "<!DOCTYPE html>"):   # Proverka dali sushtestvuva IDto
+		if ( data != "<error>book not found</error>"):   # Proverka dali sushtestvuva Imeto
 			root = ET.fromstring(data)
 			return self.parseBook(root[1])
 		else:
@@ -59,12 +62,12 @@ class goodReads():
 	
 if __name__ == "__main__":
 	g = goodReads()
-	b1 = g.showBookByID(53732)
-	b2 = g.showBookByISBN(1)
+	b1 = g.showBookByID(53732) #20168816
+	#b2 = g.showBookByISBN(1)
 	#b3 = g.showBookByID(50)
 	#b4 = g.showBookByTitle("Hatchet")
 	print b1
-	print b2
+	#print b2
 	#print b3
 	#print b4
 	#b4.AmazonLookup()
