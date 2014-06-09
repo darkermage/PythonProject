@@ -17,14 +17,7 @@ class book:
 		self.languageCode = None
 		self.isEbook = None
 		self.description = None
-		self.links = {} #TODO add more stores
-
-		self.originalPanguageId = None
-		self.originalPublicationDay = None
-		self.originalPublicationMonth = None
-		self.originalPublicationYear = None
-		self.originalTitle = None
-		self.amazonUrl = None
+		self.links = {}
 		
 	def setGoodreadsID(self,tmp):
 		self.goodreadsID = tmp
@@ -107,11 +100,6 @@ class book:
 		return self.links
 	def clearLinks(self):
 		self.links.clear()
-	
-	def AmazonLookup(self):
-		if (self.getAmazonUrl() != None):
-			webbrowser.open(self.getAmazonUrl())
-		
 		
 	def getLinksStr(self):
 		keys = self.links.keys()
