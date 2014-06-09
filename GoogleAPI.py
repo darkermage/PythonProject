@@ -1,5 +1,7 @@
 ﻿import Book
 import json
+import os
+import errno
 import urllib
 from urllib2 import urlopen
 
@@ -80,8 +82,20 @@ class GoogleAPI():
 		else:
 			return list[1]['identifier']
 	
+	def requireDir(self, path):
+		try:
+			os.makedirs(path)
+		except OSError, exc:
+			if exc.errno != errno.EEXIST:
+				raise
+	
 	def downloadPicturebyURL(self, url):
-		urllib.urlretrieve(url, "picture.jpg")
+		directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
+		self.requireDir(directory)
+		fileName = os.path.join(directory, url.split('/')[-1])
+		
+		if not os.path.exists(fileName):
+			urllib.urlretrieve(url, fileName)
 		
 if __name__ == "__main__":
 	obj = GoogleAPI()
@@ -95,3 +109,4 @@ if __name__ == "__main__":
 		print book
 	
 	obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2011/09/google-logo.jpg")
+	obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2012/04/mashable_crowd_360x225.png")
