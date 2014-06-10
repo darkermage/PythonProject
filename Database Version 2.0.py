@@ -6,34 +6,34 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import sessionmaker
 from Book import Book
 
-engine = create_engine('mysql://user1:123@localhost:3306/test', encoding='utf-8', echo = True)
+engine = create_engine('mysql://root:password@127.0.0.1:3306/bookstore', encoding='utf-8', echo = True)
 
 Base = declarative_base()
 
 class BookModel(Base):
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(100))
-    authors = Column(String(100))
-    ISBN = Column(String(50), unique=True)
+    title = Column(String(255))
+    authors = Column(String(255))
+    ISBN = Column(String(255), unique=True)
     pages = Column(Integer)
-    genre = Column(String(100))
-    publisher = Column(String(50))    
-    imageURL = Column(String(50))   
+    genre = Column(String(255))
+    publisher = Column(String(255))    
+    imageURL = Column(String(255))   
     grade = Column(Integer)
-    location = Column(String(50))
-    tenant = Column(String(50))
-    dateBorrow = Column(String(50))
-    dateReturned = Column(String(50))
+    location = Column(String(255))
+    tenant = Column(String(255))
+    dateBorrow = Column(String(255))
+    dateReturned = Column(String(255))
     
     def __init__(self, title, authors, ISBN, pages, tenant = "", dateBorrow = "", dateReturned = "", genre = "", publisher = "", imageURL = "", grade = 0, location = ""):
         self.title = title
         self.authors = authors
         self.ISBN = ISBN
         self.pages = pages
-	self.tenant = tenant
-	self.dateBorrow = dateBorrow
-	self.dateReturned = dateReturned
+        self.tenant = tenant
+        self.dateBorrow = dateBorrow
+        self.dateReturned = dateReturned
         self.genre = genre
         self.publisher = publisher   
         self.imageURL = imageURL     
@@ -46,9 +46,9 @@ class BookModel(Base):
         book.setAuthor(self.authors)
         book.setIsbn(self.ISBN)
         book.setNbPages(self.pages)
-	book.getTenant(self.tenant)
-	book.getDateBorrow(self.dateBorrow)
-	book.getDateReturned(self.dateReturned)
+        book.getTenant(self.tenant)
+        book.getDateBorrow(self.dateBorrow)
+        book.getDateReturned(self.dateReturned)
         book.setPublisher(self.publisher)     
         book.setImageURL(self.imageURL)
 

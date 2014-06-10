@@ -9,8 +9,8 @@ class MainFrame(wx.Frame):
 
     def __init__(self):
         frameTitle = "Bookah - Collection Manager"
-        super(MainFrame, self).__init__(None, title = frameTitle, size = (1000, 700))
-        self.SetMinSize((1000, 700))
+        super(MainFrame, self).__init__(None, title = frameTitle, size = (1200, 700))
+        self.SetMinSize((1200, 700))
         self.Center()
 
         self._initMenu()
@@ -75,7 +75,6 @@ class MainWindow(wx.Window):
 
         self.manageBooksWindow = ManageBooksWindow.ManageBooksWindow(self)
         self.importBookWindow = ImportWindow.ImportWindow(self)
-        self.importBookWindow.Hide()
 
         sizer = wx.BoxSizer()
         sizer.Add(self.manageBooksWindow, 1, wx.EXPAND)
