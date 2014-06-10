@@ -1,5 +1,6 @@
  # -*- coding: utf-8 -*-
 class Book:
+	"""A container class witch contains all the info about a book"""
 	def __init__(self):
 		self.goodreadsID = None
 		self.GoogleBooksId = None
