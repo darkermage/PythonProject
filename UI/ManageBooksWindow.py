@@ -1,5 +1,8 @@
+ # -*- coding: utf-8 -*-
+
 import wx
-from Book import book
+from Book import Book
+from Database import *
 
 class ManageBooksWindow(wx.Window):
     def __init__(self, parent):
@@ -19,10 +22,9 @@ class ManageBooksWindow(wx.Window):
         self.SetSizer(self.sizer);
         self.sizer.SetSizeHints(self)
 
-        # TODO: remove these lines
-        b = book()
-        b.setTittle("Count Monte Cristo")
-        self.OnShowBookDetails(b)
+        #allBooks = getAllBooks()
+
+        #self.OnShowBookDetails(allBooks[0])
 
     def OnAddNewBook(self):
         self.rightPane.ShowAddNewBook()
@@ -111,8 +113,8 @@ class BookListView(wx.Panel):
         super(BookListView, self).__init__(parent)
 
         self.sizer = wx.GridSizer(vgap = 10, hgap = 10)
-        b = book()
-        b.setTittle("Count Monte Cristo Count Monte Cristo Count Monte Cristo")
+        b = Book()
+        b.setTitle("Count Monte Cristo Count Monte Cristo Count Monte Cristo")
 
         self.sizer.Add(SingleBookView(self, b))
 
@@ -135,7 +137,7 @@ class SingleBookView(wx.Panel):
         self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img))
         sizer.Add(self.imageCtrl, 0, wx.ALIGN_CENTER_HORIZONTAL)
 
-        sizer.Add(wx.StaticText(self, label = book.getTittle(), style = wx.ALIGN_CENTER_HORIZONTAL), 1, wx.EXPAND | wx.ALL, border = 10)
+        sizer.Add(wx.StaticText(self, label = book.getTitle(), style = wx.ALIGN_CENTER_HORIZONTAL), 1, wx.EXPAND | wx.ALL, border = 10)
 
         self.SetSizer(sizer)
 
@@ -251,7 +253,11 @@ class BookDetailsView(BookViewBase):
     def ShowBook(self, book):
         self.currentBook = book
 
-        self.titleCtrl.SetLabelText(book.getTittle())
+        self.titleCtrl.SetLabelText(book.getTitle())
+        self.authorsCtrl.SetLabelText(book.getAuthorsStr())
+        self.publisherCtrl.SetLabelText(book.getPublisher())
+        self.pagesCtrl.SetLabelText(str(book.getNbPages()))
+        self.isbnCtrl.SetLabelText(book.getIsbn())
 
     def SaveChanges(self, e):
         # TODO: Save the changes

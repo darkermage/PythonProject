@@ -1,4 +1,5 @@
-﻿import Book
+﻿ # -*- coding: utf-8 -*-
+import Book
 import json
 import os
 import errno
@@ -15,14 +16,14 @@ class GoogleAPI():
 		# there might be multiple books in the result
 		for item in items:
 			
-			book = Book.book()
+			book = Book.Book()
 		
 			book.setGoogleBooksID(item['id'])
 			book.setIsEbook(item['saleInfo']['isEbook'])
 			
 			volumeInfo = item['volumeInfo']
 			
-			book.setTittle(volumeInfo['title'])
+			book.setTitle(volumeInfo['title'])
 			
 			# For some books there isn't ISBN10 and ISBN13. For those books the default value
 			# of None is left

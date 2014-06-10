@@ -9,9 +9,9 @@ class goodReads():
 		self.key = "oib8AhZCRYiJ8k3Lmlpfag"
 	
 	def parseBook(self,child):
-		book = Book.book()
+		book = Book.Book()
 		book.setGoodreadsID(child[0].text)
-		book.setTittle(child[1].text)
+		book.setTitle(child[1].text)
 		for author in child.find("authors").findall("author"):
 			book.setAuthor(author[1].text)
 		
@@ -40,6 +40,7 @@ class goodReads():
 			return self.parseBook(root[1])
 		else:
 			return None
+
 	def showBookByISBN(self,ISBN):
 		url = "https://www.goodreads.com/book/isbn?isbn="+str(ISBN)+"&key="+self.key
 		responce = urlopen(url)
@@ -49,6 +50,7 @@ class goodReads():
 			return self.parseBook(root[1])
 		else:
 			return None 
+
 	def showBookByTitle(self,title):
 		url = "https://www.goodreads.com/book/title.xml?title="+encode(str(title))+"&key="+self.key
 		responce = urlopen(url)
@@ -59,7 +61,6 @@ class goodReads():
 		else:
 			return None
 
-	
 if __name__ == "__main__":
 	g = goodReads()
 	b1 = g.showBookByID(53732) #20168816

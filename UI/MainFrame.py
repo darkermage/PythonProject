@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 import wx
 from UI import ManageBooksWindow
 from UI import ImportWindow
@@ -23,7 +25,7 @@ class MainFrame(wx.Frame):
         # Menu
         self.filemenu = wx.Menu()
         self.menuManageCollection = wx.MenuItem(None, wx.ID_ANY, "&Manage Collection", "Manage Collection") # Not attached at first
-        self.menuAddNewBook = self.filemenu.Append(wx.ID_ANY, "Add New Book", "&Add a new book")
+        self.menuAddNewBook = self.filemenu.Append(wx.ID_ANY, "&Add New Book", "Add a new book")
         self.menuImportBook = self.filemenu.Append(wx.ID_ANY, "&Import Book", "Import a book")  
         self.menuExit = self.filemenu.Append(wx.ID_EXIT, "E&xit", "Terminate the program")
 

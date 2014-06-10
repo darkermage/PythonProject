@@ -1,9 +1,9 @@
  # -*- coding: utf-8 -*-
-class book:
+class Book:
 	def __init__(self):
 		self.goodreadsID = None
 		self.GoogleBooksId = None
-		self.tittle = None
+		self.title = None
 		self.authors = []
 		self.nbPages = None
 		self.isbn = None
@@ -30,12 +30,12 @@ class book:
 	def getGoogleBooksID(self):
 		return self.GoogleBooksId
 		
-	def setTittle(self,tmp):
-		self.tittle = tmp
-	def getTittle(self):
-		return self.tittle
+	def setTitle(self,tmp):
+		self.title = tmp
+	def getTitle(self):
+		return self.title
 		
-	def setAuthor(self,tmp):
+	def setAuthors(self,tmp):
 		self.authors.append(tmp)
 	def getAuthors(self):
 		return self.authors
@@ -120,17 +120,17 @@ class book:
 		return ret
 		
 	def getAuthorsStr(self):
-		ret =""
+		ret = ""
 		for i in self.authors:
-			ret += i+" ,"
-		ret+="\n"
+			ret += i + ", "
+		ret += "\n"
 		return ret
 		
 	def __str__(self):
 		return ("*"*10+"BOOK"+"*"*10+"\n"+
 			"Goodreads ID = "+str(self.goodreadsID)+"\n"+
 			"Google Books ID = "+str(self.GoogleBooksId)+"\n"+
-			"Tittle = "+str(self.tittle)+"\n"+
+			"Tittle = "+str(self.title)+"\n"+
 			"Authors = "+self.getAuthorsStr()+
 			"Pages = "+str(self.nbPages)+"\n"+
 			"ISBN = "+str(self.isbn)+"\n"+

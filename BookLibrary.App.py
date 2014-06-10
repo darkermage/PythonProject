@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 from wx import App
 from UI.MainFrame import MainFrame
 
