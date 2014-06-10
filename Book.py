@@ -38,7 +38,7 @@ class Book:
 	def getTitle(self):
 		return self.title
 		
-	def setAuthors(self,tmp):
+	def setAuthor(self,tmp):
 		self.authors.append(tmp)
 	def getAuthors(self):
 		return self.authors
