@@ -19,6 +19,9 @@ class Book:
 		self.isEbook = None
 		self.description = None
 		self.links = {}
+		self.tenant = None
+		self.dateBorrow = None
+		self.dateReturned = None
 		
 	def setGoodreadsID(self,tmp):
 		self.goodreadsID = tmp
@@ -112,6 +115,21 @@ class Book:
 	def clearLinks(self):
 		self.links.clear()
 		
+	def setTenant(self,tmp):
+		self.tenant = tmp
+	def getTenant(self):
+		return self.tenant
+		
+	def setDateBorrow(self,tmp):
+		self.dateBorrow = tmp
+	def getDateBorrow(self):
+		return self.dateBorrow
+		
+	def setDateReturned(self,tmp):
+		self.dateReturned = tmp
+	def getDateReturned(self):
+		return self.dateReturned
+
 	def getLinksStr(self):
 		keys = self.links.keys()
 		ret = ""
