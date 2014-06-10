@@ -5,7 +5,9 @@ class Book:
 		self.GoogleBooksId = None
 		self.title = None
 		self.authors = []
+		self.gengres =[]
 		self.nbPages = None
+		self.rating = None
 		self.isbn = None
 		self.isbn13 = None
 		self.imageURL = None
@@ -43,10 +45,21 @@ class Book:
 	def getAuthors(self):
 		return self.authors
 		
+	def setGengre(self,tmp):
+		self.gengres.append(tmp)
+	def getGengres(self):
+		return self.gengres
+		
 	def setNbPages(self,tmp):
 		self.nbPages = tmp
 	def getNbPages(self):
 		return self.nbPages
+		rating
+		
+	def setRating(self,tmp):
+		self.rating = tmp
+	def getRating(self):
+		return self.rating
 		
 	def setIsbn(self,tmp):
 		self.isbn = tmp
