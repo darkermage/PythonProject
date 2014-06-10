@@ -164,6 +164,7 @@ class Book:
 			"Tittle = "+str(self.title)+"\n"+
 			"Authors = "+self.getAuthorsStr()+
 			"Pages = "+str(self.nbPages)+"\n"+
+			"Rating = "+str(self.rating)+"\n"+
 			"ISBN = "+str(self.isbn)+"\n"+
 			"ISBN 13 = "+str(self.isbn13)+"\n"+
 			"Image URL = "+str(self.imageURL)+"\n"+
