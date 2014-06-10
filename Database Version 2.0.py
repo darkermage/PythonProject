@@ -22,18 +22,18 @@ class BookModel(Base):
     imageURL = Column(String(50))   
     grade = Column(Integer)
     location = Column(String(50))
-	tenant = Column(String(50))
-	dateBorrow = Column(String(50))
-	dateReturned = Column(String(50))
+    tenant = Column(String(50))
+    dateBorrow = Column(String(50))
+    dateReturned = Column(String(50))
     
     def __init__(self, title, authors, ISBN, pages, tenant = "", dateBorrow = "", dateReturned = "", genre = "", publisher = "", imageURL = "", grade = 0, location = ""):
         self.title = title
         self.authors = authors
         self.ISBN = ISBN
         self.pages = pages
-		self.tenant = tenant
-		self.dateBorrow = dateBorrow
-		self.dateReturned = dateReturned
+	self.tenant = tenant
+	self.dateBorrow = dateBorrow
+	self.dateReturned = dateReturned
         self.genre = genre
         self.publisher = publisher   
         self.imageURL = imageURL     
@@ -46,11 +46,9 @@ class BookModel(Base):
         book.setAuthor(self.authors)
         book.setIsbn(self.ISBN)
         book.setNbPages(self.pages)
-		##Крис добави тия полета при теб
-		book.getTenant()
-		book.getDateBorrow()
-		book.getDateReturned()
-		##До тук
+	book.getTenant()
+	book.getDateBorrow()
+	book.getDateReturned()
         book.setPublisher(self.publisher)     
         book.setImageURL(self.imageURL)
 
@@ -79,9 +77,9 @@ def updateBook(id, book):
     bookModel.authors = book.getAuthorsStr()
     bookModel.ISBN = book.getIsbn()
     bookModel.pages = book.getNbPages()
-	bookModel.tenant = book.getTenant()
-	bookModel.dateBorrow = book.getDateBorrow()
-	bookModel.dateReturned = book.getDateReturned()
+    bookModel.tenant = book.getTenant()
+    bookModel.dateBorrow = book.getDateBorrow()
+    bookModel.dateReturned = book.getDateReturned()
     bookModel.genre = "" # book.genre
     bookModel.publisher = book.getPublisher()
     bookModel.imageURL = book.getImageURL()
