@@ -46,9 +46,9 @@ class BookModel(Base):
         book.setAuthor(self.authors)
         book.setIsbn(self.ISBN)
         book.setNbPages(self.pages)
-	book.getTenant()
-	book.getDateBorrow()
-	book.getDateReturned()
+	book.getTenant(self.tenant)
+	book.getDateBorrow(self.dateBorrow)
+	book.getDateReturned(self.dateReturned)
         book.setPublisher(self.publisher)     
         book.setImageURL(self.imageURL)
 
