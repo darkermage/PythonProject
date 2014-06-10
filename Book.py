@@ -5,7 +5,7 @@ class Book:
 		self.GoogleBooksId = None
 		self.title = None
 		self.authors = []
-		self.gengres =[]
+		self.genres =[]
 		self.nbPages = None
 		self.rating = None
 		self.isbn = None
@@ -45,16 +45,15 @@ class Book:
 	def getAuthors(self):
 		return self.authors
 		
-	def setGengre(self,tmp):
-		self.gengres.append(tmp)
-	def getGengres(self):
-		return self.gengres
+	def setGenre(self,tmp):
+		self.genres.append(tmp)
+	def getGenres(self):
+		return self.genres
 		
 	def setNbPages(self,tmp):
 		self.nbPages = tmp
 	def getNbPages(self):
 		return self.nbPages
-		rating
 		
 	def setRating(self,tmp):
 		self.rating = tmp
@@ -157,12 +156,20 @@ class Book:
 		ret += "\n"
 		return ret
 		
+	def getGenresStr(self):
+		ret = ""
+		for i in self.genres:
+			ret += i + " "
+		ret += "\n"
+		return ret
+		
 	def __str__(self):
 		return ("*"*10+"BOOK"+"*"*10+"\n"+
 			"Goodreads ID = "+str(self.goodreadsID)+"\n"+
 			"Google Books ID = "+str(self.GoogleBooksId)+"\n"+
 			"Tittle = "+str(self.title)+"\n"+
 			"Authors = "+self.getAuthorsStr()+
+			"Genres = "+self.getGenresStr()+
 			"Pages = "+str(self.nbPages)+"\n"+
 			"Rating = "+str(self.rating)+"\n"+
 			"ISBN = "+str(self.isbn)+"\n"+

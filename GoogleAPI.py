@@ -1,4 +1,5 @@
-﻿ # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+
 import Book
 import json
 import os
@@ -7,7 +8,8 @@ import urllib
 from urllib2 import urlopen
 
 class GoogleAPI():
-
+	
+	# The function makes a list of books objects with the data contained in the JSON object - parsedData
 	def parseBook(self, parsedData):
 		books = []
 		items = parsedData['items']
@@ -25,7 +27,17 @@ class GoogleAPI():
 			
 			book.setTitle(volumeInfo['title'])
 			
-			# For some books there isn't ISBN10 and ISBN13. For those books the default value
+			for author in volumeInfo['authors']:
+				book.setAuthor(author)
+				
+			if ('categories' in volumeInfo):
+				for category in volumeInfo['categories']:
+					book.setGenre(category)
+					
+			if ('averageRating' in volumeInfo):
+				book.setRating(volumeInfo['averageRating'])
+					
+			# For some old books there isn't ISBN10 and ISBN13. For those books the default value
 			# of None is left
 			if ('industryIdentifiers' in volumeInfo and len(volumeInfo['industryIdentifiers']) == 2):	
 				book.setIsbn(self.getShorterISBN(volumeInfo['industryIdentifiers']))
@@ -53,24 +65,43 @@ class GoogleAPI():
 			if ('language' in volumeInfo):	
 				book.setLanguageCode(volumeInfo['language'])	
 			
+			if ('pageCount' in volumeInfo):
+				book.setNbPages(volumeInfo['pageCount'])
+			
 			books.append(book)
 			
 		return books	
 	
+	# The function searches in Google Book for a book with the specified ISBN. The search by ISBN returns a unique result
+	# (if a book with this ISBN is found)
 	def searchBookByISBN(self, ISBN):
 		url = "https://www.googleapis.com/books/v1/volumes?q=isbn:"+ISBN+"&key=AIzaSyB3zv7o9a9Dqk5DFH8L_0PRRhU00UVXypE"
 		response = urlopen(url)
 		data = response.read()
 		parsedData = json.loads(data)
-		return self.parseBook(parsedData)
 		
+		# If there isn't a book with this ISBN - None is returned
+		if (parsedData['totalItems'] == 0):
+			return None
+		else:
+			return self.parseBook(parsedData)
+		
+	# The function searches in Google Books for a book that contains the specified search string in its title. Multiple books might be
+	# returned in one search.
 	def seearchBookByTitle(self, title):
 		url = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+title+"&key=AIzaSyB3zv7o9a9Dqk5DFH8L_0PRRhU00UVXypE"
 		response = urlopen(url)
 		data = response.read()
 		parsedData = json.loads(data)
-		return self.parseBook(parsedData)
+		
+		# If there isn't any books with this title - None is returned
+		if (parsedData['totalItems'] == 0):
+			return None
+		else:
+			return self.parseBook(parsedData)
 	
+	# The list provided as a parameter contains 2 values and the function is used to find which one of the two is ISBN10.
+	# The second function - getLongerISBN is used to get ISBN13 out of the list.
 	def getShorterISBN(self, list):
 		if (len(list[0]['identifier']) < len(list[1]['identifier'])):
 			return list[0]['identifier']
@@ -83,13 +114,13 @@ class GoogleAPI():
 		else:
 			return list[1]['identifier']
 	
-	def requireDir(self, path):
-		try:
+	# The function creates the directory specified in (path) variable if it doesn't exist already
+	def requireDir(self, path):	
+		if (not os.path.exists(path)):
 			os.makedirs(path)
-		except OSError, exc:
-			if exc.errno != errno.EEXIST:
-				raise
 	
+	# The function dowloads the picture that resides on the specified url. The name of the picture is taken from
+	# the last token of the url and it is saved in the (images) folder
 	def downloadPicturebyURL(self, url):
 		directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
 		self.requireDir(directory)
@@ -98,16 +129,23 @@ class GoogleAPI():
 		if not os.path.exists(fileName):
 			urllib.urlretrieve(url, fileName)
 		
+		
 if __name__ == "__main__":
 	obj = GoogleAPI()
 	books1 = obj.searchBookByISBN("0062228242")
 	books2 = obj.seearchBookByTitle("Vortex")
 	
-	for book in books1:
-		print book
+	if (books1 == None):
+		print None
+	else:
+		for book in books1:
+			print book
+			
+	if (books2 == None):
+		print None
+	else:
+		for book in books2:
+			print book	
 	
-	for book in books2:
-		print book
-	
-	obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2011/09/google-logo.jpg")
-	obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2012/04/mashable_crowd_360x225.png")
+	#obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2011/09/google-logo.jpg")
+	#obj.downloadPicturebyURL("http://www.digimouth.com/news/media/2012/04/mashable_crowd_360x225.png")
