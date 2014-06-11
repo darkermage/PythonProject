@@ -58,9 +58,9 @@ class GoogleAPI():
 				description = u.encode('ascii', 'ignore')
 				book.setDescription(description)
 			
-			if ('imageLinks' in volumeInfo):
-				book.setImageURL(volumeInfo['imageLinks']['thumbnail'])
-				book.setSmallImageURL(volumeInfo['imageLinks']['smallThumbnail'])
+			#if ('imageLinks' in volumeInfo):
+				#book.setImageURL(volumeInfo['imageLinks']['thumbnail'])
+				#book.setSmallImageURL(volumeInfo['imageLinks']['smallThumbnail'])
 			
 			if ('language' in volumeInfo):	
 				book.setLanguageCode(volumeInfo['language'])	

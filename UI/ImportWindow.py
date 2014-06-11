@@ -76,13 +76,19 @@ class ImportWindow(wx.Panel):
             self.authorLabelGoodreads.SetLabel("Author: ")  
         
     def importButtonClicked(self, event):
-        if self.chooseSite.GetValue() == "Goodreads":
-            Database.saveBook(self.bookGoodReads)
-        else:
-            Database.saveBook(self.bookGoogleBooks[0])
-        dlg = wx.MessageDialog(self, "Book imported successfully!", "Success", wx.OK)
-        returnCode = dlg.ShowModal()
-        dlg.Destroy()
+        try:
+            if self.chooseSite.GetValue() == "Goodreads":
+                Database.saveBook(self.bookGoodReads)
+            else:
+                Database.saveBook(self.bookGoogleBooks[0])
+            dlg = wx.MessageDialog(self, "Book imported successfully!", "Success", wx.OK)
+            returnCode = dlg.ShowModal()
+            dlg.Destroy()
+        except:
+            dlgError = wx.MessageDialog(self, "Book already exists ", "Error", wx.OK)
+            returnCode = dlgError.ShowModal()
+            dlgError.Destroy()
+        
         
 if __name__ == '__main__':
     app = wx.App()
