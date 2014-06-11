@@ -45,6 +45,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAbout, self.menuAbout)
 
     def OnManageColletion(self, e):
+        """Opens the Collection window"""
         self.mainWindow.ShowManageBooksWindow()
         self.filemenu.RemoveItem(self.menuManageCollection)
 
@@ -52,9 +53,11 @@ class MainFrame(wx.Frame):
         self.filemenu.InsertItem(1, self.menuImportBook)
 
     def OnAddNewBook(self, e):
+        """Opens the Add new book window"""
         self.mainWindow.OnAddNewBook()
 
     def OnImportBook(self, e):
+        """Opens the Search and import book window"""
         self.mainWindow.ShowImportBookWindow()
         self.filemenu.RemoveItem(self.menuAddNewBook)
         self.filemenu.RemoveItem(self.menuImportBook)
@@ -62,14 +65,17 @@ class MainFrame(wx.Frame):
         self.filemenu.InsertItem(0, self.menuManageCollection)
 
     def OnAbout(self,e):
+        """Opens the About window"""
         dlg = wx.MessageDialog(self, "Bookah is a simple collection manager for books.", "About Bookah", wx.OK)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OnExit(self,e):
+        """Exits from the application"""
         self.Close(True)
 
 class MainWindow(wx.Window):
+    """The Main window of the application"""
     def __init__(self, parent):
         super(MainWindow, self).__init__(parent)
 
@@ -84,6 +90,7 @@ class MainWindow(wx.Window):
         self.SetSizer(self.sizer);
 
     def ShowManageBooksWindow(self):
+        """Opens the Collection window"""
         self.sizer.Hide(self.importBookWindow)
         self.sizer.Show(self.manageBooksWindow)
         self.manageBooksWindow.leftPane.RefreshBooks()
@@ -91,10 +98,12 @@ class MainWindow(wx.Window):
         self.sizer.Layout()
 
     def ShowImportBookWindow(self):
+        """Opens the Search and Import book window"""
         self.sizer.Hide(self.manageBooksWindow)
         self.sizer.Show(self.importBookWindow)
 
         self.sizer.Layout()
 
     def OnAddNewBook(self):
+        """Opens the Add new book window"""
         self.manageBooksWindow.OnAddNewBook()

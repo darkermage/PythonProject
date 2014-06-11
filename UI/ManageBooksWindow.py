@@ -9,7 +9,7 @@ window = None
 imageManager = ImageManager()
 
 class ManageBooksWindow(wx.Window):
-    
+    """The Collection window"""
     def __init__(self, parent):
         wx.Window.__init__(self, parent)
 
@@ -31,12 +31,15 @@ class ManageBooksWindow(wx.Window):
         window = self
 
     def OnAddNewBook(self):
+        """Opens the Add new book window"""
         self.rightPane.ShowAddNewBook()
 
     def OnShowBookDetails(self, book):
+        """Open Book details window"""
         self.rightPane.ShowBookDetails(book)
 
 class LeftPane(wx.Panel):
+    """The left pane of the Collection window - here is the collection of books"""
     def __init__(self, parent):
         super(LeftPane, self).__init__(parent)
         self.SetBackgroundColour("#FFFFFF")
@@ -54,9 +57,11 @@ class LeftPane(wx.Panel):
         self.SetSizer(self.sizer)
 
     def RefreshBooks(self):
+        """Refreshes the collection of books"""
         self.bookList.RefreshBooks()
 
 class RightPane(wx.Window):
+    """The right pane of the Collection window - here is the Book details view"""
     def __init__(self, parent):
         super(RightPane, self).__init__(parent)
         self.SetBackgroundColour("#FFFFFF")
@@ -79,6 +84,7 @@ class RightPane(wx.Window):
         self.ShowNoSelectionText()
 
     def ShowNoSelectionText(self):
+        """Shows a message 'No selection'"""
         if self.addNewBookView is not None and self.addNewBookView.IsShown():
             self.sizer.Hide(self.addNewBookView)
         elif self.bookDetailsView.IsShown():
@@ -88,6 +94,7 @@ class RightPane(wx.Window):
         self.sizer.Layout()
 
     def ShowAddNewBook(self):
+        """Opens the add new book window"""
         if self.noSelectionText.IsShown():
             self.sizer.Hide(self.noSelectionText)
         elif self.bookDetailsView.IsShown():
@@ -101,6 +108,7 @@ class RightPane(wx.Window):
         self.sizer.Layout()
 
     def ShowBookDetails(self, book):
+        """Opens Book details window"""
         if self.noSelectionText.IsShown():
             self.sizer.Hide(self.noSelectionText)
         elif self.addNewBookView is not None and self.addNewBookView.IsShown():
@@ -111,7 +119,7 @@ class RightPane(wx.Window):
         self.sizer.Layout()
 
 class BookListView(wx.Panel):
-    """description of class"""
+    """Shows a list of books in a grid"""
 
     def __init__(self, parent):
         super(BookListView, self).__init__(parent)
@@ -119,6 +127,7 @@ class BookListView(wx.Panel):
         self.RefreshBooks()
 
     def RefreshBooks(self):
+        """Refreshes the list of books"""
         self.sizer = wx.GridSizer(cols = 3, vgap = 10, hgap = 10)
         
         self.DestroyChildren()
@@ -132,6 +141,7 @@ class BookListView(wx.Panel):
         self.Layout()
 
 class SingleBookView(wx.Panel):
+    """Used to show a single book in BookListView"""
     def __init__(self, parent, book):
         super(SingleBookView, self).__init__(parent)
         self.SetSizeHints(200, 240, 200, 240)

@@ -2,7 +2,7 @@ import os
 import urllib
 
 class ImageManager(object):
-    """description of class"""
+    """Helper class for working with images"""
 
     def requireDir(self, path):	
         """The function creates the directory specified in (path) variable if it doesn't exist already"""
@@ -23,6 +23,7 @@ class ImageManager(object):
         return fileName
 
     def getPicturePath(self, fileName):
+        """Search for a picture file in the directory and returns its full path, if found"""
         directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
         self.requireDir(directory)
         filePath = os.path.join(directory, fileName)
