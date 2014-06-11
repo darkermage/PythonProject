@@ -9,8 +9,8 @@ class MainFrame(wx.Frame):
 
     def __init__(self):
         frameTitle = "Bookah - Collection Manager"
-        super(MainFrame, self).__init__(None, title = frameTitle, size = (1200, 700))
-        self.SetMinSize((1200, 700))
+        super(MainFrame, self).__init__(None, title = frameTitle, size = (1000, 700))
+        self.SetMinSize((1000, 700))
         self.Center()
 
         self._initMenu()
@@ -76,19 +76,25 @@ class MainWindow(wx.Window):
         self.manageBooksWindow = ManageBooksWindow.ManageBooksWindow(self)
         self.importBookWindow = ImportWindow.ImportWindow(self)
 
-        sizer = wx.BoxSizer()
-        sizer.Add(self.manageBooksWindow, 1, wx.EXPAND)
-        sizer.Add(self.importBookWindow, 1, wx.EXPAND)
+        self.sizer = wx.BoxSizer()
+        self.sizer.Add(self.manageBooksWindow, 1, wx.EXPAND)
+        self.sizer.Add(self.importBookWindow, 1, wx.EXPAND)
+        self.sizer.Hide(self.importBookWindow)
 
-        self.SetSizer(sizer);
+        self.SetSizer(self.sizer);
 
     def ShowManageBooksWindow(self):
-        self.importBookWindow.Hide()
-        self.manageBooksWindow.Show()
+        self.sizer.Hide(self.importBookWindow)
+        self.sizer.Show(self.manageBooksWindow)
+        self.manageBooksWindow.leftPane.RefreshBooks()
+
+        self.sizer.Layout()
 
     def ShowImportBookWindow(self):
-        self.manageBooksWindow.Hide()
-        self.importBookWindow.Show()
+        self.sizer.Hide(self.manageBooksWindow)
+        self.sizer.Show(self.importBookWindow)
+
+        self.sizer.Layout()
 
     def OnAddNewBook(self):
         self.manageBooksWindow.OnAddNewBook()

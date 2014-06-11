@@ -2,10 +2,10 @@
 
 import Book
 import json
-import os
 import errno
 import urllib
 from urllib2 import urlopen
+from urllib import quote_plus as encode
 
 class GoogleAPI():
 	
@@ -89,7 +89,7 @@ class GoogleAPI():
 	# The function searches in Google Books for a book that contains the specified search string in its title. Multiple books might be
 	# returned in one search.
 	def seearchBookByTitle(self, title):
-		url = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+title+"&key=AIzaSyB3zv7o9a9Dqk5DFH8L_0PRRhU00UVXypE"
+		url = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+encode(str(title))+"&key=AIzaSyB3zv7o9a9Dqk5DFH8L_0PRRhU00UVXypE"
 		response = urlopen(url)
 		data = response.read()
 		parsedData = json.loads(data)
@@ -114,21 +114,6 @@ class GoogleAPI():
 		else:
 			return list[1]['identifier']
 	
-	# The function creates the directory specified in (path) variable if it doesn't exist already
-	def requireDir(self, path):	
-		if (not os.path.exists(path)):
-			os.makedirs(path)
-	
-	# The function dowloads the picture that resides on the specified url. The name of the picture is taken from
-	# the last token of the url and it is saved in the (images) folder
-	def downloadPicturebyURL(self, url):
-		directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
-		self.requireDir(directory)
-		fileName = os.path.join(directory, url.split('/')[-1])
-		
-		if not os.path.exists(fileName):
-			urllib.urlretrieve(url, fileName)
-		
 		
 if __name__ == "__main__":
 	obj = GoogleAPI()

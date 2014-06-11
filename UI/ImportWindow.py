@@ -15,23 +15,23 @@ class ImportWindow(wx.Panel):
         self.bookGoogleBooks = None
         
     def InitUI(self):
-        sizer = wx.GridBagSizer(4, 4)
+        self.sizer = wx.GridBagSizer(4, 4)
         
         self.searchTextField = wx.TextCtrl(self, size=(180, 20))
-        sizer.Add(self.searchTextField, pos=(0, 0), flag=wx.TOP|wx.LEFT, border = 10)
+        self.sizer.Add(self.searchTextField, pos=(0, 0), flag=wx.TOP|wx.LEFT, border = 10)
         
         self.searchButton = wx.Button(self, label="Search")
         self.searchButton.Bind(wx.EVT_BUTTON, self.searchButtonClicked)
-        sizer.Add(self.searchButton, pos=(0, 1), flag=wx.TOP|wx.LEFT, border = 10)
+        self.sizer.Add(self.searchButton, pos=(0, 1), flag=wx.TOP|wx.LEFT, border = 10)
 
         sampleList = ['Google books', 'Goodreads']
         self.chooseSite = wx.ComboBox(self, -1, "Goodreads", (30, 30), wx.DefaultSize, sampleList, wx.CB_DROPDOWN)
         self.chooseSite.SetEditable(False)
-        sizer.Add(self.chooseSite, pos=(1, 0), span = (1, 1), flag=wx.LEFT|wx.TOP|wx.EXPAND, border = 10)
+        self.sizer.Add(self.chooseSite, pos=(1, 0), span = (1, 1), flag=wx.LEFT|wx.TOP|wx.EXPAND, border = 10)
 
-        self.importButton = wx.Button(self, label="Import books")
+        self.importButton = wx.Button(self, label="Import book")
         self.importButton.Bind(wx.EVT_BUTTON, self.importButtonClicked)
-        sizer.Add(self.importButton, pos=(1, 1), flag = wx.TOP|wx.LEFT, border = 10)
+        self.sizer.Add(self.importButton, pos=(1, 1), flag = wx.TOP|wx.LEFT, border = 10)
 
         sb = wx.StaticBox(self, label = "Goodreads")
         boxsizer = wx.StaticBoxSizer(sb, wx.VERTICAL)
@@ -41,7 +41,7 @@ class ImportWindow(wx.Panel):
 
         self.authorLabel = wx.StaticText(self, label = "Author: ") 
         boxsizer.Add(self.authorLabel, flag = wx.LEFT|wx.TOP, border = 5)
-        sizer.Add(boxsizer, pos=(2, 0), span = (1, 2), flag = wx.EXPAND|wx.TOP|wx.LEFT, border = 10)
+        self.sizer.Add(boxsizer, pos=(2, 0), span = (1, 2), flag = wx.EXPAND|wx.TOP|wx.LEFT, border = 10)
 
         goodreads = wx.StaticBox(self, label = "Google books")
         boxsizerGoodreads = wx.StaticBoxSizer(goodreads, wx.VERTICAL)
@@ -52,15 +52,15 @@ class ImportWindow(wx.Panel):
         self.authorLabelGoodreads = wx.StaticText(self, label = "Author: ") 
         boxsizerGoodreads.Add(self.authorLabelGoodreads, flag = wx.LEFT|wx.TOP, border = 5)
         
-        sizer.Add(boxsizerGoodreads, pos=(3, 0), span = (1, 2), flag = wx.EXPAND|wx.TOP|wx.LEFT, border = 10)
+        self.sizer.Add(boxsizerGoodreads, pos=(3, 0), span = (1, 2), flag = wx.EXPAND|wx.TOP|wx.LEFT, border = 10)
 
-        self.SetSizer(sizer)
+        self.SetSizer(self.sizer)
 
     def searchButtonClicked(self, event):
         api = GoogleAPI()
         api2 = goodReads()
         
-        text = self.searchTextField.GetValue()
+        text = self.searchTextField.GetValue().strip()
         
         self.bookGoogleBooks = api.seearchBookByTitle(text)
         self.bookGoodReads = api2.showBookByTitle(text)
@@ -69,17 +69,20 @@ class ImportWindow(wx.Panel):
         self.authorLabel.SetLabel("Author: " + str(self.bookGoodReads.getAuthors()))
 
         if self.bookGoogleBooks != None:
-                self.titleLabelGoodreads.SetLabel("Title: " + self.bookGoogleBooks[0].title)
-                self.authorLabelGoodreads.SetLabel("Author: " + str(self.bookGoogleBooks[0].authors[0]))
+            self.titleLabelGoodreads.SetLabel("Title: " + self.bookGoogleBooks[0].title)
+            self.authorLabelGoodreads.SetLabel("Author: " + str(self.bookGoogleBooks[0].authors[0]))
         else:
-                self.titleLabelGoodreads.SetLabel("Title: ")
-                self.authorLabelGoodreads.SetLabel("Author: ")  
+            self.titleLabelGoodreads.SetLabel("Title: ")
+            self.authorLabelGoodreads.SetLabel("Author: ")  
         
     def importButtonClicked(self, event):
         if self.chooseSite.GetValue() == "Goodreads":
-                Database.saveBook(self.bookGoodReads)
+            Database.saveBook(self.bookGoodReads)
         else:
-                Database.saveBook(self.bookGoogleBooks[0])
+            Database.saveBook(self.bookGoogleBooks[0])
+        dlg = wx.MessageDialog(self, "Book imported successfully!", "Success", wx.OK)
+        returnCode = dlg.ShowModal()
+        dlg.Destroy()
         
 if __name__ == '__main__':
     app = wx.App()

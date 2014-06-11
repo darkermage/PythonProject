@@ -2,9 +2,14 @@
 
 import wx
 from Book import Book
-from Database import *
+from Images import ImageManager
+import Database
+
+window = None
+imageManager = ImageManager()
 
 class ManageBooksWindow(wx.Window):
+    
     def __init__(self, parent):
         wx.Window.__init__(self, parent)
 
@@ -22,9 +27,8 @@ class ManageBooksWindow(wx.Window):
         self.SetSizer(self.sizer);
         self.sizer.SetSizeHints(self)
 
-        #allBooks = getAllBooks()
-
-        #self.OnShowBookDetails(allBooks[0])
+        global window
+        window = self
 
     def OnAddNewBook(self):
         self.rightPane.ShowAddNewBook()
@@ -49,8 +53,8 @@ class LeftPane(wx.Panel):
 
         self.SetSizer(self.sizer)
 
-    def OnSingleBookSelected(self, book):
-        self.GetParent().GetParent().OnShowBookDetails(book)
+    def RefreshBooks(self):
+        self.bookList.RefreshBooks()
 
 class RightPane(wx.Window):
     def __init__(self, parent):
@@ -112,22 +116,25 @@ class BookListView(wx.Panel):
     def __init__(self, parent):
         super(BookListView, self).__init__(parent)
 
-        self.sizer = wx.GridSizer(vgap = 10, hgap = 10)
-        b = Book()
-        b.setTitle("Count Monte Cristo Count Monte Cristo Count Monte Cristo")
+        self.RefreshBooks()
 
-        self.sizer.Add(SingleBookView(self, b))
+    def RefreshBooks(self):
+        self.sizer = wx.GridSizer(cols = 3, vgap = 10, hgap = 10)
+        
+        self.DestroyChildren()
+
+        allBooks = Database.getAllBooks()
+
+        for book in allBooks:
+            self.sizer.Add(SingleBookView(self, book))
 
         self.SetSizer(self.sizer)
-
-    def OnSingleBookSelected(self, book):
-        self.GetParent().OnSingleBookSelected(book)
+        self.Layout()
 
 class SingleBookView(wx.Panel):
     def __init__(self, parent, book):
         super(SingleBookView, self).__init__(parent)
         self.SetSizeHints(200, 240, 200, 240)
-        self.SetBackgroundColour("#483D8B")
 
         self.book = book
 
@@ -137,52 +144,71 @@ class SingleBookView(wx.Panel):
         self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img))
         sizer.Add(self.imageCtrl, 0, wx.ALIGN_CENTER_HORIZONTAL)
 
-        sizer.Add(wx.StaticText(self, label = book.getTitle(), style = wx.ALIGN_CENTER_HORIZONTAL), 1, wx.EXPAND | wx.ALL, border = 10)
+        self.titleCtrl = wx.StaticText(self, label = book.getTitle(), style = wx.ALIGN_CENTER_HORIZONTAL)
+        sizer.Add(self.titleCtrl, 1, wx.EXPAND | wx.ALL, border = 10)
 
         self.SetSizer(sizer)
 
-        self.Bind(wx.EVT_LEFT_UP, self.OnSingleBookSelected, self)
+        self.imageCtrl.Bind(wx.EVT_LEFT_UP, self.OnSingleBookSelected)
+        self.titleCtrl.Bind(wx.EVT_LEFT_UP, self.OnSingleBookSelected)
+
+        self._onView()
 
     def OnSingleBookSelected(self, e):
-        self.GetParent().OnSingleBookSelected(self.book)
+        window.OnShowBookDetails(self.book)
+
+    def _onView(self):
+        filepath = self.book.getImage()
+        
+        if filepath is not None:
+            filepath = imageManager.getPicturePath(filepath)
+            img = wx.Image(filepath, wx.BITMAP_TYPE_ANY)
+
+            img = img.Scale(120, 180)
+ 
+            self.imageCtrl.SetBitmap(wx.BitmapFromImage(img))
+            self.Refresh()
 
 class BookViewBase(wx.Panel):
     """description of class"""
 
-    def _setBorrowedRow(self):
+    def _setBorrowerRow(self):
         borrowedLabel = wx.StaticText(self, wx.ID_ANY, "Borrowed:")
         borrowSizer = wx.BoxSizer()
         
-        self.borrower = wx.TextCtrl(self, wx.ID_ANY, size = (135, 22))
+        self.borrower = wx.TextCtrl(self, wx.ID_ANY, size = (220, 22))
         borrowSizer.Add(self.borrower)
-        self.borrowDate = wx.DatePickerCtrl(self, size = (80, 22), style = wx.DP_DROPDOWN)
-        borrowSizer.Add(self.borrowDate, flag=wx.LEFT, border = 5)
-        
+
         self.sizer.Add(borrowedLabel, 1, wx.ALIGN_RIGHT)
         self.sizer.Add(borrowSizer, 1)
 
-    def _setReturnedRow(self):
-        returnedLabel = wx.StaticText(self, wx.ID_ANY, "Returned:")
+    def _setBorrowDatesRow(self):
+        returnedLabel = wx.StaticText(self, wx.ID_ANY, "")
         returnSizer = wx.BoxSizer()
         
-        self.returner = wx.TextCtrl(self, wx.ID_ANY, size = (135, 22))
-        returnSizer.Add(self.returner)
-        returnDate = wx.DatePickerCtrl(self, size = (80, 22), style = wx.DP_DROPDOWN)
-        returnSizer.Add(returnDate, flag=wx.LEFT, border = 5)
+        self.borrowDate = wx.DatePickerCtrl(self, size = (105, 22), style = wx.DP_DROPDOWN)
+        returnSizer.Add(self.borrowDate)
+        self.returnDate = wx.DatePickerCtrl(self, size = (105, 22), style = wx.DP_DROPDOWN)
+        returnSizer.Add(self.returnDate, flag=wx.LEFT, border = 10)
         
         self.sizer.Add(returnedLabel, 1, wx.ALIGN_RIGHT)
         self.sizer.Add(returnSizer, 1)
 
-    def __init__(self, parent):      
+    def __init__(self, parent):    
+        self.book = None
+          
         super(BookViewBase, self).__init__(parent) 
         self.SetSizeHints(400, 700)
         self.boxSizer = wx.BoxSizer(wx.VERTICAL)
 
-        img = wx.EmptyImage(150, 220)
-        self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img))
+        self.imagePath = None
+        img = wx.EmptyImage(120, 180)
+        self.emptyImage = wx.BitmapFromImage(img)
+        self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, self.emptyImage)
         self.boxSizer.Add(self.imageCtrl, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.BOTTOM, border = 30)
+        self.imageCtrl.Bind(wx.EVT_LEFT_UP, self._pickImage)
 
-        self.sizer = wx.FlexGridSizer(rows = 10, cols = 2, vgap = 5, hgap = 10)
+        self.sizer = wx.FlexGridSizer(rows = 11, cols = 2, vgap = 5, hgap = 10)
 
         self.sizer.AddGrowableCol(0, 1)
         self.sizer.AddGrowableCol(1, 2)
@@ -194,6 +220,7 @@ class BookViewBase(wx.Panel):
         pagesLabel = wx.StaticText(self, wx.ID_ANY, "Pages:")
         isbnLabel = wx.StaticText(self, wx.ID_ANY, "ISBN:")
         placeLabel = wx.StaticText(self, wx.ID_ANY, "Place:")
+        grade = wx.StaticText(self, wx.ID_ANY, "Grade:")
 
         # TODO: Add validators
         defCtrlSize = wx.Size(220, 22) 
@@ -204,6 +231,7 @@ class BookViewBase(wx.Panel):
         self.pagesCtrl = wx.TextCtrl(self, wx.ID_ANY, size = defCtrlSize)
         self.isbnCtrl = wx.TextCtrl(self, wx.ID_ANY, size = defCtrlSize)
         self.placeCtrl = wx.TextCtrl(self, wx.ID_ANY, size = defCtrlSize)
+        self.gradeCtrl = wx.SpinCtrl(self, min = 0, max = 5, size = (80, 22))
 
         self.sizer.Add(titleLabel, 1, wx.ALIGN_RIGHT)
         self.sizer.Add(self.titleCtrl, 2)
@@ -219,12 +247,80 @@ class BookViewBase(wx.Panel):
         self.sizer.Add(self.isbnCtrl, 2)
         self.sizer.Add(placeLabel, 1, wx.ALIGN_RIGHT)
         self.sizer.Add(self.placeCtrl, 2)
+        self.sizer.Add(grade, 1, wx.ALIGN_RIGHT)
+        self.sizer.Add(self.gradeCtrl, 2)
 
-        self._setBorrowedRow()
-        self._setReturnedRow()
+        self._setBorrowerRow()
+        self._setBorrowDatesRow()
 
-        #self.boxSizer.Add(self.sizer, 1, wx.EXPAND)  
-        #self.SetSizerAndFit(self.boxSizer)
+    def _pickImage(self, e):
+        wildcard = "pictures (*.jpeg,*jpg,*.png,*.gif)|*.jpeg;*jpg;*.png;*.gif"
+        dialog = wx.FileDialog(None, "Choose a file",
+                               wildcard=wildcard,
+                               style=wx.OPEN)
+        if dialog.ShowModal() == wx.ID_OK:
+            fullPath = dialog.GetPath().split('\\')
+            length = len(fullPath)
+            filePath = str(fullPath[length - 1])
+            self.imagePath = filePath
+        dialog.Destroy() 
+        self._onTempView()
+
+    def _onView(self):
+        filepath = self.book.getImage()
+        
+        if filepath is not None:
+            filepath = imageManager.getPicturePath(filepath)
+            img = wx.Image(filepath, wx.BITMAP_TYPE_ANY)
+
+            img = img.Scale(120, 180)
+ 
+            self.imageCtrl.SetBitmap(wx.BitmapFromImage(img))
+            self.Refresh()
+        else:
+            self.imageCtrl.SetBitmap(self.emptyImage)
+            self.Refresh()
+
+    def _onTempView(self):
+        filepath = self.imagePath
+        
+        if filepath is not None:
+            filepath = imageManager.getPicturePath(filepath)
+            img = wx.Image(filepath, wx.BITMAP_TYPE_ANY)
+
+            img = img.Scale(120, 180)
+ 
+            self.imageCtrl.SetBitmap(wx.BitmapFromImage(img))
+            self.Refresh()
+        else:
+            self.imageCtrl.SetBitmap(self.emptyImage)
+            self.Refresh()
+
+    def CollectData(self):
+        book = Book()
+
+        if self.imagePath is not None:
+            book.setImage(self.imagePath)
+        elif self.book is not None:
+            book.setImage(self.book.getImage())
+
+        book.setTitle(str(self.titleCtrl.GetValue()))
+        book.setAuthor(str(self.authorsCtrl.GetValue()))
+        book.setGenre(str(self.genresCtrl.GetValue()))
+        book.setPublisher(str(self.publisherCtrl.GetValue()))
+        book.setNbPages(int(self.pagesCtrl.GetValue()))
+        book.setIsbn(str(self.isbnCtrl.GetValue()))
+        book.setLocation(str(self.placeCtrl.GetValue()))
+        book.setRating(self.gradeCtrl.GetValue())
+        
+        borrower = str(self.borrower.GetValue()).strip()
+        
+        if borrower != "":
+            book.setTenant(borrower)
+            book.setDateBorrow(_wxdate2pydate(self.borrowDate.GetValue()))
+            book.setDateReturned(_wxdate2pydate(self.returnDate.GetValue()))
+
+        return book
 
 class BookDetailsView(BookViewBase):
     """description of class"""
@@ -232,14 +328,12 @@ class BookDetailsView(BookViewBase):
     def __init__(self, parent): 
         super(BookDetailsView, self).__init__(parent) 
 
-        self.currentBook = None
-
         self.buttonsSizer = wx.BoxSizer()
 
         btn1 = wx.Button(self, label='Save', size=(70, 30))
-        self.buttonsSizer.Add(btn1, flag = wx.LEFT, border = 150)
-        #btn2 = wx.Button(self, label='Close', size=(70, 30))
-        #self.buttonsSizer.Add(btn2, flag=wx.LEFT, border=5)
+        self.buttonsSizer.Add(btn1, flag = wx.LEFT, border = 75)
+        btn2 = wx.Button(self, label='Delete', size=(70, 30))
+        self.buttonsSizer.Add(btn2, flag=wx.LEFT, border=5)
 
         self.sizer.Add(wx.StaticText(self, label = ""))
         self.sizer.Add(self.buttonsSizer, 1)
@@ -248,25 +342,116 @@ class BookDetailsView(BookViewBase):
         self.SetSizerAndFit(self.boxSizer)
 
         self.Bind(wx.EVT_BUTTON, self.SaveChanges, btn1)
-        #self.Bind(wx.EVT_BUTTON, self.SaveChanges, btn1)
+        self.Bind(wx.EVT_BUTTON, self.Delete, btn2)
         
     def ShowBook(self, book):
-        self.currentBook = book
+        self.book = book
 
-        self.titleCtrl.SetLabelText(book.getTitle())
-        self.authorsCtrl.SetLabelText(book.getAuthorsStr())
-        self.publisherCtrl.SetLabelText(book.getPublisher())
-        self.pagesCtrl.SetLabelText(str(book.getNbPages()))
-        self.isbnCtrl.SetLabelText(book.getIsbn())
+        self.titleCtrl.SetValue(book.getTitle())
+        self.authorsCtrl.SetValue(book.getAuthorsStr())
+
+        self.genresCtrl.SetValue(book.getGenresStr())
+
+        if book.getPublisher() is not None:
+            self.publisherCtrl.SetLabelText(book.getPublisher())
+
+        self.pagesCtrl.SetValue(str(book.getNbPages()))
+
+        if book.getIsbn() is not None:
+            self.isbnCtrl.SetValue(book.getIsbn())
+
+        if book.getLocation() is not None:
+            self.placeCtrl.SetValue(book.getLocation())
+
+        self.gradeCtrl.SetValue(book.getRating())
+
+        if book.getTenant() is not None:
+            self.borrower.SetValue(book.getTenant())
+            self.borrowDate.SetValue(_pydate2wxdate(book.getDateBorrow()))
+            self.returnDate.SetValue(_pydate2wxdate(book.getDateReturned()))
+
+        self._onView()
 
     def SaveChanges(self, e):
-        # TODO: Save the changes
-        dlg = wx.MessageDialog(self, "Bookah is a simple collection manager for books.", "About Bookah", wx.OK)
-        dlg.ShowModal()
+        dlg = wx.MessageDialog(self, "Are you sure you want to update the book?", "Update Book", wx.YES_NO)
+        returnCode = dlg.ShowModal()
         dlg.Destroy()
+
+        if returnCode == wx.ID_YES:
+            book = self.CollectData()
+
+            Database.updateBook(self.book.getID(), book)
+            #dlg2 = wx.MessageDialog(self, "The book has been updated!", "Success", wx.OK)
+            #dlg2.ShowModal()
+            #dlg2.Destroy()
+
+            window.rightPane.ShowNoSelectionText()
+            window.leftPane.RefreshBooks()
+
+    def Delete(self, e):
+        dlg = wx.MessageDialog(self, "Are you sure you want to delete the book?", "Delete Book", wx.YES_NO)
+        returnCode = dlg.ShowModal()
+        dlg.Destroy()
+
+        if returnCode == wx.ID_YES:
+            Database.deleteBook(self.book)
+            #dlg2 = wx.MessageDialog(self, "The book has been deleted!", "Success", wx.OK)
+            #dlg2.ShowModal()
+            #dlg2.Destroy()
+
+            window.rightPane.ShowNoSelectionText()
+            window.leftPane.RefreshBooks()
 
 class NewBookView(BookViewBase):
     """description of class"""
 
     def __init__(self, parent):      
         super(NewBookView, self).__init__(parent) 
+
+        self.buttonsSizer = wx.BoxSizer()
+
+        btn1 = wx.Button(self, label='Save', size=(70, 30))
+        self.buttonsSizer.Add(btn1, flag = wx.LEFT, border = 75)
+        btn2 = wx.Button(self, label='Cancel', size=(70, 30))
+        self.buttonsSizer.Add(btn2, flag=wx.LEFT, border=5)
+
+        self.sizer.Add(wx.StaticText(self, label = ""))
+        self.sizer.Add(self.buttonsSizer, 1)
+
+        self.boxSizer.Add(self.sizer, 1, wx.EXPAND)  
+        self.SetSizerAndFit(self.boxSizer)
+
+        self.Bind(wx.EVT_BUTTON, self.Save, btn1)
+        self.Bind(wx.EVT_BUTTON, self.Cancel, btn2)
+
+    def Save(self, e):
+        book = self.CollectData()
+
+        Database.saveBook(book)
+
+        dlg = wx.MessageDialog(self, "A new book is added to your colection!", "Success", wx.OK)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+        window.rightPane.ShowNoSelectionText()
+        window.leftPane.RefreshBooks()
+
+    def Cancel(self, e):
+        window.rightPane.ShowNoSelectionText()
+
+
+def _pydate2wxdate(date): 
+     import datetime 
+     assert isinstance(date, (datetime.datetime, datetime.date)) 
+     tt = date.timetuple() 
+     dmy = (tt[2], tt[1]-1, tt[0]) 
+     return wx.DateTimeFromDMY(*dmy) 
+
+def _wxdate2pydate(date): 
+     import datetime 
+     assert isinstance(date, wx.DateTime) 
+     if date.IsValid(): 
+         ymd = map(int, date.FormatISODate().split('-')) 
+         return datetime.date(*ymd) 
+     else: 
+         return None 
