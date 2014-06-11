@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, Date
 from sqlalchemy.orm import sessionmaker
 from Book import Book
 
-engine = create_engine('mysql://root:password@127.0.0.1:3306/bookstore', encoding='utf-8', echo = True)
+engine = create_engine('mysql://root:123@127.0.0.1:3306/bookstore', encoding='utf-8', echo = True)
 
 Base = declarative_base()
 
